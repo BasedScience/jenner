@@ -1,2 +1,2 @@
 # jenner
-jenner code examples
+Jenner/SAS-compatible code
