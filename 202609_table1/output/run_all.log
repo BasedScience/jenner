@@ -1,0 +1,36 @@
+NOTE: Library RAW assigned path=/home/dockien/Desktop/github/jenner/sourcedata/tdf_adam/.
+NOTE: Library DER assigned path=/home/dockien/Desktop/code/jenner/202609_table1/data/.
+NOTE: PROC DATASETS library=DER
+
+NOTE: 
+                       Directory
+
+       Libref             DER
+       Engine             V9
+       Physical Name      /home/dockien/Desktop/code/jenner/202609_table1/data/
+
+       #    Name                             Member Type
+       ----------------------------------------------------
+       1    FAS                              DATA
+
+NOTE: KILL option deleted 1 member(s) from library DER.
+NOTE: PROC FORMAT library=WORK
+
+NOTE: FORMAT $sex_f defined (2 ranges).
+NOTE: FORMAT agec_f defined (3 ranges).
+NOTE: FORMAT race_f defined (4 ranges).
+NOTE: DATA der.fas
+
+
+NOTE: Read 254 rows from raw.adsl.
+NOTE: The data set DER.FAS has 254 observations and 17 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA _null_
+
+NOTE: Total runtime:  0:00:00
+
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds

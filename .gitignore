@@ -3,8 +3,5 @@
 # jenner dirs
 work/
 .cas/
-# temp lst and log files
-*.log
-*.lst
 # vim swp files
 *.swp
