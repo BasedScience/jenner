@@ -17,8 +17,8 @@ Copyright (c) 2026 Doc Kien
 
 * Interaction         : uses formats defined in formats.sas
 
-* Input files  : adsl, advs, adlb
-* Output files : na
+* Input files  : adsl, advs
+* Output files : der.demog
 
 + Developed under : LINUX Jenner v1.5.97
 
@@ -35,29 +35,96 @@ Comments :
 /*                      Beginning of Code                            */
 /*********************************************************************/
 
-data der.fas;
+*collect relevant demog vars and derive required cat vars;
+data der.adsl;
   set raw.adsl;
 *derive sex;
   sexf=put(sex,$sex_f.);
-*derive age cats;
+*age cats;
   if age ne . then do;
     if age lt 65 then agen=1;
     else if age le 80 then agen=2;
     else if age gt 80 then agen=3;
   end;
-  agec=put(agen,agec_f.);
-*derive race;
-  if lowcase(ethnic)=:'hispanic' then racen=3;
+  agec=put(agen,age_f.);
+*bmi cats;
+  if bmibl ne . then do;
+    if bmibl lt 25 then bmin=1;
+    else if bmibl lt 30 then bmin=2;
+    else bmin=3;
+  end;
+  bmic=put(bmin,bmi_f.);
+*duration of disease
+ -this is already available in the dataset, i derive it to check it;
+  if durdis ne . then do;
+    if durdis lt 12 then durdisn=1;
+    else durdisn=2;
+  end;
+  durdisc=put(durdisn,durdis_f.);
+*new race cats;
+  if lowcase(race)=:'white' and lowcase(ethnic)=:'not' then racen=1;
   else if lowcase(race)=:'black' then racen=2;
-  else if lowcase(race)=:'white' then racen=1;
+  else if lowcase(ethnic)=:'hispanic' then racen=3;
   else if race ne '' or ethnic ne '' then racen=4;
   racec=put(racen,race_f.);
   rename trt01an=trtn trt01a=trt ittfl=fasfl;
-  where ittfl='Y';
   keep usubjid trt01an trt01a ittfl
-       age sex bmibl weightbl heightbl educlvl trtdur mmsetot
-       sexf agen agec racen racec;
+       age bmibl weightbl heightbl educlvl trtdur mmsetot
+       sexf agen agec bmin bmic durdisn durdisc racen racec;
 run;
+
+proc sort data=der.adsl;
+  by usubjid;
+run;
+
+*get blood pressure (this is not in the csr table, done here to evaluate jenner);
+data der.vital;
+  set raw.advs;
+  where paramcd in ('SYSBP','DIABP') and lowcase(atpt)=:'after lying'
+    and ablfl='Y'; /*there is no anelfl flag in the dataset*/
+  keep usubjid paramcd aval;
+run;
+
+proc sort data=der.vital;
+  by usubjid;
+run;
+
+proc transpose data=der.vital out=der.vital_t (drop=_name_ _label_);
+  var aval;
+  id paramcd;
+  by usubjid;
+run;
+
+*merge vars together and select study pop;
+data slvs;
+  merge der.adsl der.vital_t;
+  by usubjid;
+  if fasfl='Y' then output;
+run;
+
+*add total group: needed for total column in summary table;
+data demog;
+  set slvs (in=a) slvs;
+  if a then do;
+    newsubjid='T'||usubjid;
+    trt='total';
+    trtn=100;
+  end;
+  else newsubjid=usubjid;
+  drop usubjid;
+run;
+
+*put vars in sensible order using retain;
+
+data der.demog;
+  retain newsubjid;
+  set demog;
+run;
+
+proc sort data=der.demog;
+  by newsubjid;
+run;
+
 
 
 /*********************************************************************/

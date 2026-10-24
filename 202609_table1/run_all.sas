@@ -44,7 +44,8 @@ run;
 
 *define data libraries;
 libname raw "/home/dockien/Desktop/github/jenner/sourcedata/tdf_adam/";
-libname der "/home/dockien/Desktop/code/jenner/202609_table1/data/";
+*libname der "/home/dockien/Desktop/code/jenner/202609_table1/data/";
+libname der "&path/data/";
 
 *clear datasets to start session;
 proc datasets lib=der kill memtype=data;

@@ -11,22 +11,108 @@ NOTE:
 
        #    Name                             Member Type
        ----------------------------------------------------
-       1    FAS                              DATA
+       1    ADSL                             DATA
+       2    CONTENTS                         DATA
+       3    DEMOG                            DATA
+       4    VITAL                            DATA
+       5    VITAL_T                          DATA
 
-NOTE: KILL option deleted 1 member(s) from library DER.
+NOTE: KILL option deleted 5 member(s) from library DER.
 NOTE: PROC FORMAT library=WORK
 
 NOTE: FORMAT $sex_f defined (2 ranges).
-NOTE: FORMAT agec_f defined (3 ranges).
+NOTE: FORMAT age_f defined (3 ranges).
+NOTE: FORMAT bmi_f defined (3 ranges).
+NOTE: FORMAT durdis_f defined (2 ranges).
 NOTE: FORMAT race_f defined (4 ranges).
-NOTE: DATA der.fas
+NOTE: PROC DATASETS library=RAW
+
+NOTE: 
+                       Directory
+
+       Libref             RAW
+       Engine             V9
+       Physical Name      /home/dockien/Desktop/github/jenner/sourcedata/tdf_adam/
+
+       #    Name                             Member Type
+       ----------------------------------------------------
+       1    ADAE                             DATA
+       2    ADLBC                            DATA
+       3    ADLBH                            DATA
+       4    ADLBHY                           DATA
+       5    ADQSADAS                         DATA
+       6    ADQSCIBC                         DATA
+       7    ADQSNPIX                         DATA
+       8    ADSL                             DATA
+       9    ADTTE                            DATA
+       10   ADVS                             DATA
+
+NOTE: PROC CONTENTS data=raw.adsl
+
+NOTE: PROC CONTENTS: OUT=der.contents created with 48 variables
+NOTE: PROC CONTENTS completed: 254 observations, 48 variables
+NOTE: PROC CONTENTS data=raw.advs
+
+NOTE: PROC CONTENTS completed: 32139 observations, 34 variables
+NOTE: DATA der.adsl
 
 
 NOTE: Read 254 rows from raw.adsl.
-NOTE: The data set DER.FAS has 254 observations and 17 variables.
+NOTE: The data set DER.ADSL has 254 observations and 20 variables.
 NOTE: DATA elapsed:
   wall  0.00 seconds
   cpu   0.00 seconds
+NOTE: PROC SORT data=der.adsl
+
+NOTE: Read 254 rows from der.adsl.
+NOTE: The data set DER.ADSL has 254 observations and 20 variables.
+NOTE: PROC SORT statement used.
+NOTE: DATA der.vital
+
+
+NOTE: Read 506 rows from raw.advs.
+NOTE: The data set DER.VITAL has 506 observations and 3 variables.
+NOTE: DATA elapsed:
+  wall  0.09 seconds
+  cpu   0.12 seconds
+NOTE: PROC SORT data=der.vital
+
+NOTE: Read 506 rows from der.vital.
+NOTE: The data set DER.VITAL has 506 observations and 3 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC TRANSPOSE data=der.vital
+
+NOTE: Created 253 rows.
+NOTE: Output written to ./data//vital_t.parquet.
+NOTE: DATA work.slvs
+
+
+NOTE: The data set WORK.SLVS has 254 observations and 22 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA work.demog
+
+
+NOTE: Read 254 rows from slvs.
+NOTE: Read 254 rows from slvs.
+NOTE: The data set WORK.DEMOG has 508 observations and 22 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA der.demog
+
+
+NOTE: Read 508 rows from demog.
+NOTE: The data set DER.DEMOG has 508 observations and 22 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=der.demog
+
+NOTE: Read 508 rows from der.demog.
+NOTE: The data set DER.DEMOG has 508 observations and 22 variables.
+NOTE: PROC SORT statement used.
 NOTE: DATA _null_
 
 NOTE: Total runtime:  0:00:00
