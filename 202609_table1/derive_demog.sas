@@ -39,7 +39,7 @@ Comments :
 data der.adsl;
   set raw.adsl;
 *derive sex;
-  sexf=put(sex,$sex_f.);
+  sexc=put(sex,$sex_f.);
 *age cats;
   if age ne . then do;
     if age lt 65 then agen=1;
@@ -47,13 +47,14 @@ data der.adsl;
     else if age gt 80 then agen=3;
   end;
   agec=put(agen,age_f.);
-*bmi cats;
+*bmi cats 
+ - note the cats in the source data misclassify the missing bmi value as <25;
   if bmibl ne . then do;
     if bmibl lt 25 then bmin=1;
     else if bmibl lt 30 then bmin=2;
     else bmin=3;
   end;
-  bmic=put(bmin,bmi_f.);
+  if bmin ne . then bmic=put(bmin,bmi_f.);
 *duration of disease
  -this is already available in the dataset, i derive it to check it;
   if durdis ne . then do;
@@ -71,14 +72,13 @@ data der.adsl;
   rename trt01an=trtn trt01a=trt ittfl=fasfl;
   keep usubjid trt01an trt01a ittfl
        age bmibl weightbl heightbl educlvl trtdur mmsetot
-       sexf agen agec bmin bmic durdisn durdisc racen racec;
+       sexc agen agec bmin bmic durdisn durdisc racen racec;
 run;
 
 *check no duplicates;
 proc sort data=der.adsl nodupkey;
   by usubjid;
 run;
-*when there are no duplicates it doesnt indicate this in log????;
 
 *get blood pressure;
 data der.advs;
