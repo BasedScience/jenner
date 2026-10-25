@@ -34,14 +34,23 @@ Comments:
 *check datasets available;
 proc datasets library=raw;
 quit;
-*there is no med hist (admh), there are a couple lab datasets (lb);
+*there is no med hist (admh) or conmeds (adcm), there are a couple lab datasets (lb);
 
 proc contents data=raw.adsl out=der.contents;
 run;
-*n=254;
+*from var list, note: use ittfl flag;
 
-proc contents data=raw.advs;
+*check n;
+proc freq data=raw.adsl;
+  tables ittfl*trt01a / list;
 run;
+
+*check number missing;
+proc means data=raw.advs n nmiss;
+  where paramcd='SYSBP';
+  var aval;
+run;
+*4 missing, make sure this appears in the summary table;
 
 
 /*********************************************************************/

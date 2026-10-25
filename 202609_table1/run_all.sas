@@ -48,9 +48,9 @@ libname raw "/home/dockien/Desktop/github/jenner/sourcedata/tdf_adam/";
 libname der "&path/data/";
 
 *clear datasets to start session;
-proc datasets lib=der kill memtype=data;
-run;
-quit;
+*proc datasets lib=der kill memtype=data;
+*run;
+*quit;
 
 *cancel all currently defined titles and footnotes;
 title;
@@ -77,7 +77,6 @@ footnote;
 /*                      analysis programs */
 /*********************************************************************/
 
-*get stats;
 *%include "&path/analysis.sas"; /*get basic stats and pvals as per csr*/
 
 /*********************************************************************/

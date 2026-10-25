@@ -67,29 +67,33 @@ data der.adsl;
   else if lowcase(ethnic)=:'hispanic' then racen=3;
   else if race ne '' or ethnic ne '' then racen=4;
   racec=put(racen,race_f.);
+*use succint var names;
   rename trt01an=trtn trt01a=trt ittfl=fasfl;
   keep usubjid trt01an trt01a ittfl
        age bmibl weightbl heightbl educlvl trtdur mmsetot
        sexf agen agec bmin bmic durdisn durdisc racen racec;
 run;
 
-proc sort data=der.adsl;
+*check no duplicates;
+proc sort data=der.adsl nodupkey;
   by usubjid;
 run;
+*when there are no duplicates it doesnt indicate this in log????;
 
-*get blood pressure (this is not in the csr table, done here to evaluate jenner);
-data der.vital;
+*get blood pressure;
+data der.advs;
   set raw.advs;
   where paramcd in ('SYSBP','DIABP') and lowcase(atpt)=:'after lying'
     and ablfl='Y'; /*there is no anelfl flag in the dataset*/
   keep usubjid paramcd aval;
 run;
 
-proc sort data=der.vital;
-  by usubjid;
+*check no duplicates;
+proc sort data=der.advs nodupkey;
+  by usubjid paramcd;
 run;
 
-proc transpose data=der.vital out=der.vital_t (drop=_name_ _label_);
+proc transpose data=der.advs out=der.advs_t (drop=_name_ _label_);
   var aval;
   id paramcd;
   by usubjid;
@@ -97,7 +101,7 @@ run;
 
 *merge vars together and select study pop;
 data slvs;
-  merge der.adsl der.vital_t;
+  merge der.adsl der.advs_t;
   by usubjid;
   if fasfl='Y' then output;
 run;
@@ -107,7 +111,7 @@ data demog;
   set slvs (in=a) slvs;
   if a then do;
     newsubjid='T'||usubjid;
-    trt='total';
+    trt='Total';
     trtn=100;
   end;
   else newsubjid=usubjid;
@@ -115,7 +119,6 @@ data demog;
 run;
 
 *put vars in sensible order using retain;
-
 data der.demog;
   retain newsubjid;
   set demog;
@@ -124,7 +127,6 @@ run;
 proc sort data=der.demog;
   by newsubjid;
 run;
-
 
 
 /*********************************************************************/
