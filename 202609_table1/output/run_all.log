@@ -1,118 +1,67 @@
 NOTE: Library RAW assigned path=/home/dockien/Desktop/github/jenner/sourcedata/tdf_adam/.
 NOTE: Library DER assigned path=/home/dockien/Desktop/code/jenner/202609_table1/data/.
-NOTE: PROC DATASETS library=DER
-
-NOTE: 
-                       Directory
-
-       Libref             DER
-       Engine             V9
-       Physical Name      /home/dockien/Desktop/code/jenner/202609_table1/data/
-
-       #    Name                             Member Type
-       ----------------------------------------------------
-       1    ADSL                             DATA
-       2    CONTENTS                         DATA
-       3    DEMOG                            DATA
-       4    VITAL                            DATA
-       5    VITAL_T                          DATA
-
-NOTE: KILL option deleted 5 member(s) from library DER.
-NOTE: PROC FORMAT library=WORK
-
-NOTE: FORMAT $sex_f defined (2 ranges).
-NOTE: FORMAT age_f defined (3 ranges).
-NOTE: FORMAT bmi_f defined (3 ranges).
-NOTE: FORMAT durdis_f defined (2 ranges).
-NOTE: FORMAT race_f defined (4 ranges).
-NOTE: PROC DATASETS library=RAW
-
-NOTE: 
-                       Directory
-
-       Libref             RAW
-       Engine             V9
-       Physical Name      /home/dockien/Desktop/github/jenner/sourcedata/tdf_adam/
-
-       #    Name                             Member Type
-       ----------------------------------------------------
-       1    ADAE                             DATA
-       2    ADLBC                            DATA
-       3    ADLBH                            DATA
-       4    ADLBHY                           DATA
-       5    ADQSADAS                         DATA
-       6    ADQSCIBC                         DATA
-       7    ADQSNPIX                         DATA
-       8    ADSL                             DATA
-       9    ADTTE                            DATA
-       10   ADVS                             DATA
-
-NOTE: PROC CONTENTS data=raw.adsl
-
-NOTE: PROC CONTENTS: OUT=der.contents created with 48 variables
-NOTE: PROC CONTENTS completed: 254 observations, 48 variables
-NOTE: PROC CONTENTS data=raw.advs
-
-NOTE: PROC CONTENTS completed: 32139 observations, 34 variables
-NOTE: DATA der.adsl
-
-
-NOTE: Read 254 rows from raw.adsl.
-NOTE: The data set DER.ADSL has 254 observations and 20 variables.
-NOTE: DATA elapsed:
-  wall  0.00 seconds
-  cpu   0.00 seconds
-NOTE: PROC SORT data=der.adsl
-
-NOTE: Read 254 rows from der.adsl.
-NOTE: The data set DER.ADSL has 254 observations and 20 variables.
-NOTE: PROC SORT statement used.
-NOTE: DATA der.vital
-
-
-NOTE: Read 506 rows from raw.advs.
-NOTE: The data set DER.VITAL has 506 observations and 3 variables.
-NOTE: DATA elapsed:
-  wall  0.09 seconds
-  cpu   0.12 seconds
-NOTE: PROC SORT data=der.vital
-
-NOTE: Read 506 rows from der.vital.
-NOTE: The data set DER.VITAL has 506 observations and 3 variables.
-NOTE: PROC SORT statement used.
-NOTE: PROC TRANSPOSE data=der.vital
-
-NOTE: Created 253 rows.
-NOTE: Output written to ./data//vital_t.parquet.
-NOTE: DATA work.slvs
-
-
-NOTE: The data set WORK.SLVS has 254 observations and 22 variables.
-NOTE: DATA elapsed:
-  wall  0.00 seconds
-  cpu   0.00 seconds
-NOTE: DATA work.demog
-
-
-NOTE: Read 254 rows from slvs.
-NOTE: Read 254 rows from slvs.
-NOTE: The data set WORK.DEMOG has 508 observations and 22 variables.
-NOTE: DATA elapsed:
-  wall  0.00 seconds
-  cpu   0.00 seconds
-NOTE: DATA der.demog
-
-
-NOTE: Read 508 rows from demog.
-NOTE: The data set DER.DEMOG has 508 observations and 22 variables.
-NOTE: DATA elapsed:
-  wall  0.00 seconds
-  cpu   0.00 seconds
 NOTE: PROC SORT data=der.demog
 
 NOTE: Read 508 rows from der.demog.
-NOTE: The data set DER.DEMOG has 508 observations and 22 variables.
+NOTE: The data set WORK.DEMOG has 508 observations and 22 variables.
 NOTE: PROC SORT statement used.
+NOTE: ODS OUTPUT: BASICMEASURES -> stats
+NOTE: ODS OUTPUT: QUANTILES -> qrtls
+NOTE: ODS OUTPUT: MOMENTS -> ns
+NOTE: PROC UNIVARIATE
+NOTE: PROC SORT data=qrtls
+
+NOTE: Read 308 rows from qrtls.
+NOTE: The data set WORK.QRTLS has 308 observations and 4 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC TRANSPOSE data=qrtls
+
+NOTE: Created 28 rows.
+NOTE: Output written to ./work/5a320252-e96b-410a-aa1d-ff38dcada0f1/qrtls_t1.parquet.
+NOTE: PROC TRANSPOSE data=qrtls
+
+NOTE: Created 28 rows.
+NOTE: Output written to ./work/5a320252-e96b-410a-aa1d-ff38dcada0f1/qrtls_t2.parquet.
+NOTE: DATA der.contstats
+
+
+NOTE: Read 28 rows from ns.
+NOTE: Read 28 rows from qrtls_t1.
+NOTE: Read 28 rows from stats.
+NOTE: Read 28 rows from qrtls_t2.
+NOTE: The data set DER.CONTSTATS has 112 observations and 5 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=der.contstats
+
+NOTE: Read 112 rows from der.contstats.
+NOTE: The data set DER.CONTSTATS has 112 observations and 5 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC TRANSPOSE data=der.contstats
+
+NOTE: Created 28 rows.
+NOTE: Output written to ./data//contstats_t.parquet.
+NOTE: ODS OUTPUT: CROSSTABFREQS -> der.freqs
+NOTE: PROC FREQ
+NOTE: PROC FREQ statement used.
+NOTE: DATA der.catstats
+
+
+NOTE: Read 76 rows from der.freqs.
+NOTE: The data set DER.CATSTATS has 76 observations and 7 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=der.catstats
+
+NOTE: Read 76 rows from der.catstats.
+NOTE: The data set DER.CATSTATS has 76 observations and 7 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC TRANSPOSE data=der.catstats
+
+NOTE: Created 19 rows.
+NOTE: Output written to ./data//catstats_t.parquet.
 NOTE: DATA _null_
 
 NOTE: Total runtime:  0:00:00
