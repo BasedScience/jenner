@@ -20,7 +20,7 @@ Copyright (c) 2026 Doc Kien
 * Input files  : adsl, advs
 * Output files : der.demog
 
-+ Developed under : LINUX Jenner v1.5.97
++ Developed under : LINUX Jenner v1.5.110
 
 Comments :
  [#]  Date         Author     Comment
@@ -79,6 +79,7 @@ run;
 proc sort data=der.adsl nodupkey;
   by usubjid;
 run;
+*none;
 
 *get blood pressure;
 data der.advs;
@@ -92,6 +93,7 @@ run;
 proc sort data=der.advs nodupkey;
   by usubjid paramcd;
 run;
+*none;
 
 proc transpose data=der.advs out=der.advs_t (drop=_name_ _label_);
   var aval;

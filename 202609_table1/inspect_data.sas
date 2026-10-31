@@ -19,7 +19,7 @@ Copyright (c) 2026 Doc Kien
 * Input files  : raw.adsl, advs
 * Output files : na
 
-+ Developed under : LINUX Jenner v1.5.97
++ Developed under : LINUX Jenner v1.5.110
 
 Comments:
  [#]  Date         Author     Comment
@@ -50,7 +50,7 @@ proc means data=raw.advs n nmiss;
   where paramcd='SYSBP';
   var aval;
 run;
-*4 missing, make sure this appears in the summary table;
+*4 missing, confirm this appears in the summary table;
 
 
 /*********************************************************************/

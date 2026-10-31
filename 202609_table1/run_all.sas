@@ -19,7 +19,7 @@ Copyright (c) 2026 Doc Kien
 * Input files  : na
 * Output files : na
 
-+ Developed under : LINUX Jenner v1.5.97
++ Developed under : LINUX Jenner v1.5.110
 
 Comments:
  [#]  Date         Author     Comment
@@ -48,9 +48,9 @@ libname raw "/home/dockien/Desktop/github/jenner/sourcedata/tdf_adam/";
 libname der "&path/data/";
 
 *clear datasets to start session;
-proc datasets lib=der kill memtype=data;
-run;
-quit;
+*proc datasets lib=der kill memtype=data;
+*run;
+*quit;
 
 *cancel all currently defined titles and footnotes;
 title;
@@ -63,15 +63,15 @@ footnote;
 /*                      macros and formats */
 /*********************************************************************/
 
-%include "&path/formats.sas"; /*define formats*/
+*%include "&path/formats.sas"; /*define formats*/
 
 
 /*********************************************************************/
 /*                      data prep */
 /*********************************************************************/
 
-%include "&path/inspect_data.sas"; /*check contents of datasets*/
-%include "&path/derive_demog.sas"; /*gather required variables for fas*/
+*%include "&path/inspect_data.sas"; /*check contents of datasets*/
+*%include "&path/derive_demog.sas"; /*gather required variables for fas*/
 
 /*********************************************************************/
 /*                      analysis programs */
