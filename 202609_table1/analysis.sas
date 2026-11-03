@@ -16,10 +16,11 @@ Copyright (c) 2026 Doc Kien
 
 * Interaction         : uses output from derive_data.sas
 
-* Input files  : der.demog (this is fas, see derive_demog.sas)
+* Input files  : der.demog (this is fas. it contains a total group which must
+                 be removed before running trt group comparisons. see derive_demog.sas)
 * Output files : 
 
-+ Developed under : LINUX Jenner v1.5.110
++ Developed under : LINUX Jenner v1.5.113
 
 Comments:
  [#]  Date         Author     Comment
@@ -37,6 +38,8 @@ Comments:
       and should be presented as such
  [5]  31oct2026   Doc Kien    the csr table doesnt display mean (sd).
       do it the standard way though
+ [6]  31oct2026, they used ancova and pearson, i will use kruskall wallis
+      and pearson
 
 */
 
@@ -49,7 +52,24 @@ proc sort data=der.demog out=demog;
   by trtn;
 run;
 
-ods output basicmeasures=stats (where=(locmeasure in ('Mean')))
+*for geom means and cv;
+ods graphics off; /*suppress unwanted plots*/
+ods output statistics=stats1;* (rename=(variable=varname geommean=gm cv=cv_));
+proc ttest data=demog dist=lognormal;
+  var alt ast;
+  by trtn;
+run;
+
+data der.stats1;
+  set stats1;
+  *cv=100*cv_;
+  *keep varname trtn gm cv;
+run;
+*need to check it is giving correct cv;
+*need stats for both vars in the ods, need the same var names that sas uses;
+
+*for arithmetic means and std dev;
+ods output basicmeasures=stats2 (where=(locmeasure in ('Mean')))
            quantiles=qrtls
            moments=ns (where=(label1 in ('N')));
 proc univariate data=demog;
@@ -82,7 +102,7 @@ data der.contstats;
    format statxt $50. varname $50. statn_ 4.1 statmp stat $100.;
    set ns        (in=a)
        qrtls_t1  (in=b)
-       stats     (in=c)
+       stats2    (in=c)
        qrtls_t2  (in=d);
    if a then do;
      statn_=0.1;
@@ -120,6 +140,13 @@ proc transpose data=der.contstats out=der.contstats_t (drop=_name_) prefix=trt;
   by varname statn_ statxt;
 run;
 
+*pvals for contin vars;
+ods output KruskalWallisTest=der.kwpval;* (where=(name1='P_KW') rename=(nvalue1=prob variable=varname));
+proc npar1way data=der.demog wilcoxon plots=none;
+  class trtn ;
+  var age trtdur bmibl weightbl heightbl mmsetot educlvl;
+quit;
+
 *get stats: categorical vars ;
 ods output crosstabfreqs=der.freqs (where=(_type_ in ('11','10')));
 proc freq data=der.demog;
@@ -127,14 +154,9 @@ proc freq data=der.demog;
 run;
 
 data der.catstats;
-  format statxt $50. stat label $100.;
+  format statxt $50. stat $100.;
   set der.freqs ;
   varname=substr(table,14);
-       if varname='sexc'    then label='Sex';
-  else if varname='agec'    then label='Age (years)';
-  else if varname='bmic'    then label='BMI (kg/m2)';
-  else if varname='racec'   then label='Race';
-  else if varname='durdisc' then label='Duration of disease';
   if _type_='11' then do;
     stat=put(frequency,5.)||' ('||put(rowpercent,5.1)||'%)';
     statxt=left(sexc||agec||bmic||racec||durdisc);
@@ -145,19 +167,50 @@ data der.catstats;
     statxt='N';
     statn_=0.1;
   end;
-  keep varname label statxt stat trtn frequency rowpercent;
+  keep varname statn_ statxt stat trtn frequency rowpercent;
 run;
 
 *transpose to make cats columns;
 proc sort data=der.catstats;
-  by varname label statxt;
+  by varname statn_ statxt;
 run;
 
 proc transpose data=der.catstats out=der.catstats_t (drop=_name_) prefix=trt;
   var stat;
   id trtn;
-  by varname label statn_ statxt;
+  by varname statn_ statxt;
 run;
+
+*get p-values;
+ods output chisq=chisq;
+proc freq data=der.demog (where=(trtn ne 100));
+   tables trtn*sexc trtn*agec trtn*bmic trtn*racec trtn*durdisc/ chisq;
+run;
+
+data der.chisq;
+  set chisq;
+  varname=substr(table,14);
+  pval=put(prob,pvalue6.4);
+  if statistic=:'Chi' then output;
+  keep varname pval;
+run;
+
+proc sort data=der.chisq;
+  by varname;
+run;
+*bmi pvalue differs, probably because of the way the missings have been handled-yes, they 
+ put missings in the lowest cat;
+
+proc sort data=der.chisq;
+  by varname;
+run;
+
+*merge p-values onto stats;
+data der.catstats_t2;
+  merge der.catstats_t der.chisq;
+  by varname;
+run;
+
 
 /*********************************************************************/
 /*                         End of Code                               */

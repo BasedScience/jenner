@@ -19,7 +19,7 @@ Copyright (c) 2026 Doc Kien
 * Input files  : na
 * Output files : na
 
-+ Developed under : LINUX Jenner v1.5.110
++ Developed under : LINUX Jenner v1.5.113
 
 Comments:
  [#]  Date         Author     Comment
@@ -60,7 +60,7 @@ footnote;
 %let total_t0 = %sysfunc(datetime()); 
 
 /*********************************************************************/
-/*                      macros and formats */
+/*                   macros and formats */
 /*********************************************************************/
 
 *%include "&path/formats.sas"; /*define formats*/

@@ -17,10 +17,10 @@ Copyright (c) 2026 Doc Kien
 
 * Interaction         : uses formats defined in formats.sas
 
-* Input files  : adsl, advs
+* Input files  : adsl, advs, adlbc
 * Output files : der.demog
 
-+ Developed under : LINUX Jenner v1.5.110
++ Developed under : LINUX Jenner v1.5.113
 
 Comments :
  [#]  Date         Author     Comment
@@ -101,9 +101,28 @@ proc transpose data=der.advs out=der.advs_t (drop=_name_ _label_);
   by usubjid;
 run;
 
+*get some labs for illustration;
+data der.adlb;
+  set raw.adlbc;
+  where paramcd in ('AST','ALT') and ablfl='Y';
+  keep usubjid paramcd aval;
+run;
+
+*check no duplicates;
+proc sort data=der.adlb nodupkey;
+  by usubjid paramcd;
+run;
+*none;
+
+proc transpose data=der.adlb out=der.adlb_t (drop=_name_ _label_);
+  var aval;
+  id paramcd;
+  by usubjid;
+run;
+
 *merge vars together and select study pop;
 data slvs;
-  merge der.adsl der.advs_t;
+  merge der.adsl der.advs_t der.adlb_t;
   by usubjid;
   if fasfl='Y' then output;
 run;
