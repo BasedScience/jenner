@@ -71,7 +71,7 @@ data der.adsl;
 *use succint var names;
   rename trt01an=trtn trt01a=trt ittfl=fasfl;
   keep usubjid trt01an trt01a ittfl
-       age bmibl weightbl heightbl educlvl trtdur mmsetot
+       age bmibl weightbl heightbl educlvl durdis mmsetot
        sexc agen agec bmin bmic durdisn durdisc racen racec;
 run;
 
