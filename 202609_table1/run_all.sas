@@ -77,13 +77,14 @@ footnote;
 /*                      analysis programs */
 /*********************************************************************/
 
-%include "&path/analysis.sas"; /*get basic stats and pvals as per csr*/
+*%include "&path/analysis.sas"; /*get basic stats and pvals as per csr*/
+*%include "&path/checks.sas"; /*get basic stats and pvals as per csr*/
 
 /*********************************************************************/
 /*                      create outputs */
 /*********************************************************************/
 
-*%include "&path/table1.sas"; /*create table as txt and pdf*/
+%include "&path/table1.sas"; /*create table as txt and pdf*/
 
 *output speed;
 %let total_speed = %sysevalf(%sysfunc(datetime()) - &total_t0);

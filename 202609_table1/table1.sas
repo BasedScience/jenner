@@ -35,29 +35,59 @@ Comments:
 /*                      Beginning of Code                            */
 /*********************************************************************/
 
-data der.table1;
+
+
+*see notes in notes.txt;
+
+
+
+data table1;
 *use retain statement to put variables in a sensible order;
-  retain varname label statn statn_ statxt trt:;
-  format label $100. statn 4.1;
+  retain varname label posn posn_ statyp trt:;
+  format label $100. posn 4.1;
   set der.catstats_t2 der.contstats_t2;
-*add labels;
-       if varname='sexc'    then label='Sex';
-  else if varname='agec'    then label='Age (years)';
-  else if varname='bmic'    then label='BMI (kg/m2)';
-  else if varname='racec'   then label='Race';
-  else if varname='durdisc' then label='Duration of disease';
+*add labels (from eg param variable in adlbc);
+       if lowcase(varname)='age'      then label='Age (y)';
+  else if lowcase(varname)='agec'     then label='Age group (y), n (%)';
+  else if lowcase(varname)='sexc'     then label='Sex';
+  else if lowcase(varname)='racec'    then label='Race (Origin)';
+  else if lowcase(varname)='mmsetot'  then label='MMSE';
+  else if lowcase(varname)='durdis'   then label='Duration of disease (months)';
+  else if lowcase(varname)='durdisc'  then label='Duration of disease groups (months), n (%)';
+  else if lowcase(varname)='educlvl'  then label='Years of education';
+  else if lowcase(varname)='weightbl' then label='Weight (kg)';
+  else if lowcase(varname)='heightbl' then label='Height (cm)';
+  else if lowcase(varname)='bmi'      then label='BMI (kg/m2)';
+  else if lowcase(varname)='bmic'     then label='BMI group (kg/m2), n (%)';
+  else if lowcase(varname)='ast'      then label='Aspartate Aminotransferase in Serum (U/L)';
+  else if lowcase(varname)='alt'      then label='Alanine Aminotransferase in Serum (U/L)';
 *add var to sort;
-       if varname='age'   then statn = 1+statn_;
-  else if varname='agec'  then statn = 1+statn_;
-  else if varname='sexc'  then statn = 2;
-  else if varname='mmse'  then statn = 3+statn_;
-  *pagen=floor(divide(statn,5));
-  pagen=1;
-  label statxt='statistic';
+       if lowcase(varname)='age'      then posn = 1+posn_;
+  else if lowcase(varname)='agec'     then posn = 2+posn_;
+  else if lowcase(varname)='sexc'     then posn = 3+posn_;
+  else if lowcase(varname)='racec'    then posn = 4+posn_;
+  else if lowcase(varname)='mmsetot'  then posn = 5+posn_;
+  else if lowcase(varname)='durdis'   then posn = 6+posn_;
+  else if lowcase(varname)='durdisc'  then posn = 7+posn_;
+  else if lowcase(varname)='educlvl'  then posn = 8+posn_;
+  else if lowcase(varname)='weightbl' then posn = 9+posn_;
+  else if lowcase(varname)='heightbl' then posn = 10+posn_;
+  else if lowcase(varname)='bmibl'    then posn = 11+posn_;
+  else if lowcase(varname)='bmic'     then posn = 12+posn_;
+  else if lowcase(varname)='ast'      then posn = 13+posn_;
+  else if lowcase(varname)='alt'      then posn = 14+posn_;
+  pagen=floor(divide(posn,4));
+  label statyp='statistic';
 run;
 
-proc sort data=der.table1;
-  by statn ;
+proc sort data=table1;
+  by posn label;
+run;
+
+data der.table1;
+  set table1;
+  by posn label;
+  if not first.label then pval='';
 run;
 
 *get ns for table headings;
@@ -82,27 +112,25 @@ proc printto file=outfile new;
 run;
 
 title1 j=r " ";
-title2 j=l "Table 1. Summary of Baseline Demographics*";
+title2 j=l "Table 1. Summary of Baseline Demographics";
 
 proc report data=der.table1
    spacing=1 nowd headline formchar(2)='_' headskip split='#' ls=150 ps=200;
-  compute after grpn;
+  compute after label;
     line @1 '';
   endcomp;
-  compute before label2;
-    line @14 label2 $100.;
-  endcomp;
-  column (pagen label statxt trt: );
+  column (pagen label statyp trt: pval);
   define pagen      / order order=data noprint;
   define label      / order order=data width=35 left "Characteristic" flow;
-  define statxt     / order order=data width=19 left "Statistic" missing flow;
+  define statyp     / order order=data width=19 left "Statistic" flow;
   define trt0       / display width=22 "Cagrisema (n=&trtn0)";
-  define trt54       / display width=22 "Placebo (n=&trtn54)";
-  define trt81       / display width=22 "Placebo (n=&trtn81)";
-  define trt100       / display width=22 "Total (n=&trtn100)";
+  define trt54      / display width=22 "Placebo (n=&trtn54)";
+  define trt81      / display width=22 "Placebo (n=&trtn81)";
+  define trt100     / display width=22 "Total (n=&trtn100)";
+  define pval       / display width=22 "p-value[1]"; /*should display one for row only*/
   compute after;
     line @1 '             ____________________________________________________________________________________________________________________________';
-    line @1 "             [1] P-values from Kruskall-Wallis for continuous variables and Pearson's chi-square test for categorical variables....";
+    line @1 "             [1] P-values for a difference between treatment groups is from Kruskall-Wallis for continuous variables and Pearson's chi-square test for categorical variables....";
   endcomp;
 run;
 

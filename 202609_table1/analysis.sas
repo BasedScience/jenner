@@ -14,7 +14,7 @@ Copyright (c) 2026 Doc Kien
 + Program responsible : Doc Kien
 + Date of creation    : 24-Oct-2026
 
-* Interaction         : uses output from derive_data.sas
+* Interaction         : uses dataset created by derive_data.sas
 
 * Input files  : der.demog (this is fas. it contains a total group which must
                  be removed before running trt group comparisons. see derive_demog.sas)
@@ -53,27 +53,26 @@ proc sort data=der.demog out=demog;
 run;
 
 *for geom means and cv;
-*ods graphics off; /*suppress unwanted plots*/
-*ods output statistics=stats1;* (rename=(variable=varname geommean=gm cv=cv_));
-*proc ttest data=demog dist=lognormal;
-*  var alt ast;
-*  by trtn;
-*run;
-*
-*data der.stats1;
-*  set stats1;
-*  *cv=100*cv_;
-*  *keep varname trtn gm cv;
-*run;
-*need to check it is giving correct cv;
-*need stats for both vars in the ods, need the same var names that sas uses;
+ods graphics off; /*suppress unwanted plots*/
+ods output statistics=stats1 (rename=(variable=varname geometricmean=gm coefvar=cv_));
+proc ttest data=demog dist=lognormal;
+  var alt ast;
+  by trtn;
+run;
+
+data der.stats1;
+  set stats1;
+  cv=100*cv_;
+  keep varname trtn gm cv;
+run;
 
 *for arithmetic means and std dev;
-ods output basicmeasures=stats2 (where=(locmeasure in ('Mean')))
-           quantiles=qrtls
+ods output basicmeasures=stats2 (where=(locmeasure in ('Mean') and
+                                        varname not in ('AST','ALT')))
+           quantiles=qrtls (where=(varname not in ('AST','ALT')))
            moments=ns (where=(label1 in ('N')));
 proc univariate data=demog;
-  var age durdis bmibl weightbl heightbl mmsetot educlvl;
+  var age durdis bmibl weightbl heightbl mmsetot educlvl ast alt;
   by trtn;
 run;
 
@@ -97,54 +96,62 @@ proc transpose data=qrtls (where=(quantile in ('25% Q1','50% Median','75% Q3')))
    id quantile;
 run;
 
-*put all together (statn_ is used for sorting below when creating dataset for proc report);
+*put all together and create text var to display in table
+ (posn_ is used for sorting below when creating dataset for proc report);
 data der.contstats;
-  format statxt $50. varname $50. statn_ 4.1 statmp stat $100.;
+  format statyp $50. varname $50. posn_ 4.1 statmp stat $100.;
   set ns        (in=a)
       qrtls_t1  (in=b)
-      stats2    (in=c)
-      qrtls_t2  (in=d);
+      der.stats1 (in=c)   
+      stats2    (in=d)
+      qrtls_t2  (in=e);
   if a then do;
-    statn_=0.1;
-    statxt='N';
+    posn_=0.1;
+    statyp='N';
     statmp=put(nvalue1,5.);
   end;
   else if b then do;
-    statn_=0.2;
-    statxt='Min, Max';
+    posn_=0.2;
+    statyp='Min, Max';
     statmp=compbl(put(_0__Min,6.1)||', '||put(_100__Max,6.1));
   end;
   else if c then do;
-    statn_=0.3;
-    statxt='Mean (SD)';
-    statmp=compbl(put(locvalue,6.1)||' ('||put(varvalue,6.1)||')');
+    posn_=0.3;
+    statyp='Geom. mean (CV)';
+    statmp=compbl(put(gm,6.1)||' ('||put(cv,6.1)||')');
   end;
   else if d then do;
-    statn_=0.4;
-    statxt='Median (Q1,Q3)';
+    posn_=0.3;
+    statyp='Mean (SD)';
+    statmp=compbl(put(locvalue,6.1)||' ('||put(varvalue,6.1)||')');
+  end;
+  else if e then do;
+    posn_=0.4;
+    statyp='Median (Q1,Q3)';
     statmp=compbl(put(_50__Median,6.1)||' ('||put(_25__Q1,6.1)||','||put(_75__Q3,6.1)||')');
   end;
 *remove unwanted space;
   stat=tranwrd(statmp,'( ','(');
-  keep trtn varname statn_ statxt stat;
+  keep trtn varname posn_ statyp stat;
 run;
 
 *transpose to make trts columns;
 proc sort data=der.contstats;
-  by varname statn_ statxt;
+  by varname posn_ statyp;
 run;
 
+*now create cols for trt groups;
 proc transpose data=der.contstats out=der.contstats_t (drop=_name_) prefix=trt;
   var stat;
   id trtn;
-  by varname statn_ statxt;
+  by varname posn_ statyp;
 run;
 
 *pvals for contin vars;
 ods output KruskalWallisTest=kwpval (rename=(variable=varname));
 proc npar1way data=der.demog wilcoxon plots=none;
   class trtn ;
-  var age durdis bmibl weightbl heightbl mmsetot educlvl;
+  var age durdis bmibl weightbl heightbl mmsetot educlvl ast alt;
 quit;
 
 data der.kwpval;
@@ -171,31 +178,31 @@ proc freq data=der.demog;
 run;
 
 data der.catstats;
-  format statxt $50. stat $100.;
+  format statyp $50. stat $100.;
   set der.freqs ;
   varname=substr(table,14);
   if _type_='11' then do;
     stat=put(frequency,5.)||' ('||put(rowpercent,5.1)||'%)';
-    statxt=left(sexc||agec||bmic||racec||durdisc);
-    statn_=0.2;
+    statyp=left(sexc||agec||bmic||racec||durdisc);
+    posn_=0.2;
   end;
   else if _type_='10' then do;
     stat=put(frequency,5.);
-    statxt='N';
-    statn_=0.1;
+    statyp='N';
+    posn_=0.1;
   end;
-  keep varname statn_ statxt stat trtn frequency rowpercent;
+  keep varname posn_ statyp stat trtn frequency rowpercent;
 run;
 
 *transpose to make cats columns;
 proc sort data=der.catstats;
-  by varname statn_ statxt;
+  by varname posn_ statyp;
 run;
 
 proc transpose data=der.catstats out=der.catstats_t (drop=_name_) prefix=trt;
   var stat;
   id trtn;
-  by varname statn_ statxt;
+  by varname posn_ statyp;
 run;
 
 *get p-values;

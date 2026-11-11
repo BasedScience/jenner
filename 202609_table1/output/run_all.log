@@ -1,71 +1,47 @@
 NOTE: Library RAW assigned path=/home/dockien/Desktop/github/jenner/sourcedata/tdf_adam/.
 NOTE: Library DER assigned path=/home/dockien/Desktop/code/jenner/202609_table1/data/.
-NOTE: PROC SORT data=der.demog
-
-NOTE: Read 508 rows from der.demog.
-NOTE: The data set WORK.DEMOG has 508 observations and 22 variables.
-NOTE: PROC SORT statement used.
-NOTE: ODS OUTPUT: BASICMEASURES -> stats
-NOTE: ODS OUTPUT: QUANTILES -> qrtls
-NOTE: ODS OUTPUT: MOMENTS -> ns
-NOTE: PROC UNIVARIATE
-NOTE: PROC SORT data=qrtls
-
-NOTE: Read 308 rows from qrtls.
-NOTE: The data set WORK.QRTLS has 308 observations and 4 variables.
-NOTE: PROC SORT statement used.
-NOTE: PROC TRANSPOSE data=qrtls
-
-NOTE: Created 28 rows.
-NOTE: Output written to ./work/5a320252-e96b-410a-aa1d-ff38dcada0f1/qrtls_t1.parquet.
-NOTE: PROC TRANSPOSE data=qrtls
-
-NOTE: Created 28 rows.
-NOTE: Output written to ./work/5a320252-e96b-410a-aa1d-ff38dcada0f1/qrtls_t2.parquet.
-NOTE: DATA der.contstats
+NOTE: DATA work.table1
 
 
-NOTE: Read 28 rows from ns.
-NOTE: Read 28 rows from qrtls_t1.
-NOTE: Read 28 rows from stats.
-NOTE: Read 28 rows from qrtls_t2.
-NOTE: The data set DER.CONTSTATS has 112 observations and 5 variables.
+NOTE: Read 19 rows from der.catstats_t2.
+NOTE: Read 32 rows from der.contstats_t2.
+NOTE: The data set WORK.TABLE1 has 51 observations and 11 variables.
 NOTE: DATA elapsed:
   wall  0.00 seconds
   cpu   0.00 seconds
-NOTE: PROC SORT data=der.contstats
+NOTE: PROC SORT data=table1
 
-NOTE: Read 112 rows from der.contstats.
-NOTE: The data set DER.CONTSTATS has 112 observations and 5 variables.
+NOTE: Read 51 rows from table1.
+NOTE: The data set WORK.TABLE1 has 51 observations and 11 variables.
 NOTE: PROC SORT statement used.
-NOTE: PROC TRANSPOSE data=der.contstats
+NOTE: DATA der.table1
 
-NOTE: Created 28 rows.
-NOTE: Output written to ./data//contstats_t.parquet.
-NOTE: ODS OUTPUT: CROSSTABFREQS -> der.freqs
+
+NOTE: Read 51 rows from table1.
+NOTE: The data set DER.TABLE1 has 51 observations and 11 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: ODS OUTPUT: ONEWAYFREQS -> getns
 NOTE: PROC FREQ
 NOTE: PROC FREQ statement used.
-NOTE: DATA der.catstats
+NOTE: DATA _null_
 
 
-NOTE: Read 76 rows from der.freqs.
-NOTE: The data set DER.CATSTATS has 76 observations and 7 variables.
+NOTE: Read 4 rows from getns.
 NOTE: DATA elapsed:
   wall  0.00 seconds
   cpu   0.00 seconds
-NOTE: PROC SORT data=der.catstats
+ERROR: [JENNER-ERROR:PARSE:step10] Parse error: ERROR 22-322: Syntax error at "OUTFILE" in the PRINT= option of the PROC PRINTTO statement, expecting one of the following: PRINT, a quoted file name, a fileref.
+ERROR 202-322: The option or parameter is not recognized and will be ignored.
+NOTE: Option TITLE changed to  .
+NOTE: Option TITLE2 changed to Table 1. Summary of Baseline Demographics.
+NOTE: PROC REPORT data=der.table1
 
-NOTE: Read 76 rows from der.catstats.
-NOTE: The data set DER.CATSTATS has 76 observations and 7 variables.
-NOTE: PROC SORT statement used.
-NOTE: PROC TRANSPOSE data=der.catstats
+NOTE: PROC REPORT output 51 observations with 8 variables.
 
-NOTE: Created 19 rows.
-NOTE: Output written to ./data//catstats_t.parquet.
-NOTE: DATA _null_
-
-NOTE: Total runtime:  0:00:00
-
-NOTE: DATA elapsed:
+NOTE: Read 51 rows from der.table1.
+NOTE: The data set (console) has 51 observations and 8 variables.
+NOTE: PROC REPORT elapsed:
   wall  0.00 seconds
   cpu   0.00 seconds
