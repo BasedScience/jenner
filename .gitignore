@@ -1,0 +1,7 @@
+# derived data
+derived/
+# jenner dirs
+work/
+.cas/
+# vim swp files
+*.swp

@@ -1,0 +1,437 @@
+NOTE: Library RAW assigned path=~/Desktop/github/jenner/sourcedata/tdf_adam/.
+NOTE: Library DER assigned path=~/Desktop/github/jenner/202609_table1/data/.
+NOTE: PROC DATASETS library=DER
+
+NOTE: 
+                       Directory
+
+       Libref             DER
+       Engine             V9
+       Physical Name      /home/dockien/Desktop/github/jenner/202609_table1/data/
+
+       #    Name                             Member Type
+       ----------------------------------------------------
+       1    ADLB                             DATA
+       2    ADLB_T                           DATA
+       3    ADSL                             DATA
+       4    ADVS                             DATA
+       5    ADVS_T                           DATA
+       6    CATSTATS                         DATA
+       7    CATSTATS_T                       DATA
+       8    CATSTATS_T2                      DATA
+       9    CHECK                            DATA
+       10   CHECK1                           DATA
+       11   CHECK2                           DATA
+       12   CHECK3                           DATA
+       13   CHECK_T                          DATA
+       14   CHISQ                            DATA
+       15   CONTENTS                         DATA
+       16   CONTSTATS                        DATA
+       17   CONTSTATS_T                      DATA
+       18   CONTSTATS_T2                     DATA
+       19   DEMOG                            DATA
+       20   FREQS                            DATA
+       21   KWPVAL                           DATA
+       22   STATS1                           DATA
+       23   STATS2                           DATA
+       24   TABLE1                           DATA
+
+NOTE: KILL option deleted 24 member(s) from library DER.
+NOTE: PROC FORMAT library=WORK
+
+NOTE: FORMAT $sex_f defined (2 ranges).
+NOTE: FORMAT age_f defined (3 ranges).
+NOTE: FORMAT bmi_f defined (3 ranges).
+NOTE: FORMAT durdis_f defined (2 ranges).
+NOTE: FORMAT race_f defined (4 ranges).
+NOTE: PROC DATASETS library=RAW
+
+NOTE: 
+                       Directory
+
+       Libref             RAW
+       Engine             V9
+       Physical Name      /home/dockien/Desktop/github/jenner/sourcedata/tdf_adam/
+
+       #    Name                             Member Type
+       ----------------------------------------------------
+       1    ADAE                             DATA
+       2    ADLBC                            DATA
+       3    ADLBH                            DATA
+       4    ADLBHY                           DATA
+       5    ADQSADAS                         DATA
+       6    ADQSCIBC                         DATA
+       7    ADQSNPIX                         DATA
+       8    ADSL                             DATA
+       9    ADTTE                            DATA
+       10   ADVS                             DATA
+
+NOTE: PROC CONTENTS data=RAW.ADSL
+
+NOTE: PROC CONTENTS: OUT=DER.CONTENTS created with 48 variables
+NOTE: PROC CONTENTS completed: 254 observations, 48 variables
+NOTE: PROC FREQ
+NOTE: PROC FREQ statement used.
+NOTE: PROC MEANS
+NOTE: PROC MEANS statement used.
+NOTE: DATA DER.ADSL
+
+
+NOTE: There were 254 observations read from the data set RAW.ADSL.
+NOTE: The data set DER.ADSL has 254 observations and 20 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=DER.ADSL
+
+NOTE: There were 254 observations read from the data set DER.ADSL.
+NOTE: 0 observations with duplicate key values were deleted.
+NOTE: The data set DER.ADSL has 254 observations and 20 variables.
+NOTE: PROC SORT statement used.
+NOTE: DATA DER.ADVS
+
+
+NOTE: There were 506 observations read from the data set RAW.ADVS.
+      WHERE paramcd in ('SYSBP', 'DIABP') and (LOWCASE(atpt)=:'after lying') and (ablfl='Y');
+NOTE: The data set DER.ADVS has 506 observations and 3 variables.
+NOTE: DATA elapsed:
+  wall  0.05 seconds
+  cpu   0.07 seconds
+NOTE: PROC SORT data=DER.ADVS
+
+NOTE: There were 506 observations read from the data set DER.ADVS.
+NOTE: 0 observations with duplicate key values were deleted.
+NOTE: The data set DER.ADVS has 506 observations and 3 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC TRANSPOSE data=DER.ADVS
+
+NOTE: The data set DER.ADVS_T has 253 observations and 3 variables.
+NOTE: DATA DER.ADLB
+
+
+NOTE: There were 504 observations read from the data set RAW.ADLBC.
+      WHERE paramcd in ('AST', 'ALT') and (ablfl='Y');
+NOTE: The data set DER.ADLB has 504 observations and 3 variables.
+NOTE: DATA elapsed:
+  wall  0.11 seconds
+  cpu   0.18 seconds
+NOTE: PROC SORT data=DER.ADLB
+
+NOTE: There were 504 observations read from the data set DER.ADLB.
+NOTE: 0 observations with duplicate key values were deleted.
+NOTE: The data set DER.ADLB has 504 observations and 3 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC TRANSPOSE data=DER.ADLB
+
+NOTE: The data set DER.ADLB_T has 252 observations and 3 variables.
+NOTE: DATA WORK.SLVS
+
+
+NOTE: The data set WORK.SLVS has 254 observations and 24 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA WORK.DEMOG
+
+
+NOTE: There were 254 observations read from the data set WORK.SLVS.
+NOTE: There were 254 observations read from the data set WORK.SLVS.
+NOTE: The data set WORK.DEMOG has 508 observations and 24 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA DER.DEMOG
+
+
+NOTE: There were 508 observations read from the data set WORK.DEMOG.
+NOTE: The data set DER.DEMOG has 508 observations and 24 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=DER.DEMOG
+
+NOTE: There were 508 observations read from the data set DER.DEMOG.
+NOTE: The data set DER.DEMOG has 508 observations and 24 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC SORT data=DER.DEMOG
+
+NOTE: There were 508 observations read from the data set DER.DEMOG.
+NOTE: The data set WORK.DEMOG has 508 observations and 24 variables.
+NOTE: PROC SORT statement used.
+NOTE: ODS Graphics is OFF.
+NOTE: ODS OUTPUT: STATISTICS -> WORK.STATS1
+NOTE: PROC TTEST data=WORK.DEMOG
+
+NOTE: BY Group: Actual Treatment for Period 01 (N)=0
+NOTE: BY Group: Actual Treatment for Period 01 (N)=54
+NOTE: BY Group: Actual Treatment for Period 01 (N)=81
+NOTE: BY Group: Actual Treatment for Period 01 (N)=100
+NOTE: PROC TTEST statement used.
+NOTE: DATA DER.STATS1
+
+
+NOTE: There were 8 observations read from the data set WORK.STATS1.
+NOTE: The data set DER.STATS1 has 8 observations and 4 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: ODS OUTPUT: BASICMEASURES -> WORK.STATS2
+NOTE: ODS OUTPUT: QUANTILES -> WORK.QRTLS
+NOTE: ODS OUTPUT: MOMENTS -> WORK.NS
+NOTE: PROC UNIVARIATE
+NOTE: PROC SORT data=WORK.QRTLS
+
+NOTE: There were 308 observations read from the data set WORK.QRTLS.
+NOTE: The data set WORK.QRTLS has 308 observations and 4 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC TRANSPOSE data=WORK.QRTLS
+
+NOTE: The data set WORK.QRTLS_T1 has 28 observations and 4 variables.
+NOTE: PROC TRANSPOSE data=WORK.QRTLS
+
+NOTE: The data set WORK.QRTLS_T2 has 28 observations and 5 variables.
+NOTE: DATA DER.CONTSTATS
+
+
+NOTE: There were 36 observations read from the data set WORK.NS.
+NOTE: There were 28 observations read from the data set WORK.QRTLS_T1.
+NOTE: There were 8 observations read from the data set DER.STATS1.
+NOTE: There were 28 observations read from the data set WORK.STATS2.
+NOTE: There were 28 observations read from the data set WORK.QRTLS_T2.
+NOTE: The data set DER.CONTSTATS has 128 observations and 5 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=DER.CONTSTATS
+
+NOTE: There were 128 observations read from the data set DER.CONTSTATS.
+NOTE: The data set DER.CONTSTATS has 128 observations and 5 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC TRANSPOSE data=DER.CONTSTATS
+
+NOTE: The data set DER.CONTSTATS_T has 32 observations and 7 variables.
+NOTE: ODS OUTPUT: KRUSKALWALLISTEST -> WORK.KWPVAL
+NOTE: PROC NPAR1WAY data=DER.DEMOG
+
+NOTE: ODS OUTPUT: KruskalWallisTest written to 'WORK.KWPVAL'.
+NOTE: ODS OUTPUT: KruskalWallisTest written to 'WORK.KWPVAL'.
+NOTE: ODS OUTPUT: KruskalWallisTest written to 'WORK.KWPVAL'.
+NOTE: ODS OUTPUT: KruskalWallisTest written to 'WORK.KWPVAL'.
+NOTE: ODS OUTPUT: KruskalWallisTest written to 'WORK.KWPVAL'.
+NOTE: ODS OUTPUT: KruskalWallisTest written to 'WORK.KWPVAL'.
+NOTE: ODS OUTPUT: KruskalWallisTest written to 'WORK.KWPVAL'.
+NOTE: ODS OUTPUT: KruskalWallisTest written to 'WORK.KWPVAL'.
+NOTE: ODS OUTPUT: KruskalWallisTest written to 'WORK.KWPVAL'.
+NOTE: DATA DER.KWPVAL
+
+
+NOTE: There were 9 observations read from the data set WORK.KWPVAL.
+NOTE: The data set DER.KWPVAL has 9 observations and 2 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=DER.KWPVAL
+
+NOTE: There were 9 observations read from the data set DER.KWPVAL.
+NOTE: The data set DER.KWPVAL has 9 observations and 2 variables.
+NOTE: PROC SORT statement used.
+NOTE: DATA DER.CONTSTATS_T2
+
+
+NOTE: The data set DER.CONTSTATS_T2 has 32 observations and 8 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: ODS OUTPUT: CROSSTABFREQS -> DER.FREQS
+NOTE: PROC FREQ
+NOTE: PROC FREQ statement used.
+NOTE: DATA DER.CATSTATS
+
+
+NOTE: There were 76 observations read from the data set DER.FREQS.
+NOTE: The data set DER.CATSTATS has 76 observations and 7 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=DER.CATSTATS
+
+NOTE: There were 76 observations read from the data set DER.CATSTATS.
+NOTE: The data set DER.CATSTATS has 76 observations and 7 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC TRANSPOSE data=DER.CATSTATS
+
+NOTE: The data set DER.CATSTATS_T has 19 observations and 7 variables.
+NOTE: ODS OUTPUT: CHISQ -> WORK.CHISQ
+NOTE: PROC FREQ
+NOTE: PROC FREQ statement used.
+NOTE: DATA DER.CHISQ
+
+
+NOTE: There were 30 observations read from the data set WORK.CHISQ.
+NOTE: The data set DER.CHISQ has 5 observations and 2 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=DER.CHISQ
+
+NOTE: There were 5 observations read from the data set DER.CHISQ.
+NOTE: The data set DER.CHISQ has 5 observations and 2 variables.
+NOTE: PROC SORT statement used.
+NOTE: PROC SORT data=DER.CHISQ
+
+NOTE: Input data set is already sorted, no sorting done.
+NOTE: DATA DER.CATSTATS_T2
+
+
+NOTE: The data set DER.CATSTATS_T2 has 19 observations and 8 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: DATA WORK.LOGDATA
+
+
+NOTE: There were 508 observations read from the data set DER.DEMOG.
+NOTE: The data set WORK.LOGDATA has 508 observations and 26 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC MEANS
+NOTE: Output dataset WORK.STATS1 has 1 observations and 4 variables.
+NOTE: PROC MEANS statement used.
+NOTE: DATA DER.CHECK1
+
+
+NOTE: There were 1 observations read from the data set WORK.STATS1.
+NOTE: The data set DER.CHECK1 has 1 observations and 6 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: ODS Graphics is OFF.
+NOTE: ODS OUTPUT: STATISTICS -> WORK.STATS2
+NOTE: PROC TTEST data=DER.DEMOG
+
+NOTE: PROC TTEST statement used.
+NOTE: DATA DER.CHECK2
+
+
+NOTE: There were 2 observations read from the data set WORK.STATS2.
+NOTE: The data set DER.CHECK2 has 2 observations and 9 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=DER.DEMOG
+
+NOTE: There were 508 observations read from the data set DER.DEMOG.
+NOTE: The data set WORK.DEMOG has 508 observations and 24 variables.
+NOTE: PROC SORT statement used.
+NOTE: ODS OUTPUT: BASICMEASURES -> DER.STATS2
+NOTE: PROC UNIVARIATE
+NOTE: DATA DER.CHECK
+
+
+NOTE: There were 254 observations read from the data set DER.DEMOG.
+      WHERE trtn not = 100;
+NOTE: The data set DER.CHECK has 254 observations and 9 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC TRANSPOSE data=DER.CHECK
+
+NOTE: The data set DER.CHECK_T has 1778 observations and 5 variables.
+NOTE: PROC SORT data=DER.CHECK_T
+
+NOTE: There were 1778 observations read from the data set DER.CHECK_T.
+NOTE: The data set DER.CHECK_T has 1778 observations and 5 variables.
+NOTE: PROC SORT statement used.
+NOTE: ODS OUTPUT: MODELANOVA -> WORK.CHECK2
+NOTE: PROC ANOVA data=DER.CHECK_T
+
+NOTE: ODS OUTPUT: MODELANOVA written to 'check2' (7 observations across 7 BY groups).
+NOTE: PROC ANOVA: 1778 observations, 1 effects analyzed
+NOTE: DATA DER.CHECK2
+
+
+NOTE: There were 7 observations read from the data set WORK.CHECK2.
+NOTE: The data set DER.CHECK2 has 7 observations and 9 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: ODS OUTPUT: OVERALLANOVA -> DER.CHECK3
+NOTE: PROC GLM data=DER.CHECK_T
+
+NOTE: PROC GLM data=DER.CHECK_T
+
+NOTE: ODS OUTPUT: OverallANOVA written to 'DER.CHECK3'.
+NOTE: PROC GLM statement used.
+NOTE: PROC GLM data=DER.CHECK_T
+
+NOTE: ODS OUTPUT: OverallANOVA written to 'DER.CHECK3'.
+NOTE: PROC GLM statement used.
+NOTE: PROC GLM data=DER.CHECK_T
+
+NOTE: ODS OUTPUT: OverallANOVA written to 'DER.CHECK3'.
+NOTE: PROC GLM statement used.
+NOTE: PROC GLM data=DER.CHECK_T
+
+NOTE: ODS OUTPUT: OverallANOVA written to 'DER.CHECK3'.
+NOTE: PROC GLM statement used.
+NOTE: PROC GLM data=DER.CHECK_T
+
+NOTE: ODS OUTPUT: OverallANOVA written to 'DER.CHECK3'.
+NOTE: PROC GLM statement used.
+NOTE: PROC GLM data=DER.CHECK_T
+
+NOTE: ODS OUTPUT: OverallANOVA written to 'DER.CHECK3'.
+NOTE: PROC GLM statement used.
+NOTE: PROC GLM data=DER.CHECK_T
+
+NOTE: ODS OUTPUT: OverallANOVA written to 'DER.CHECK3'.
+NOTE: PROC GLM statement used.
+NOTE: ODS OUTPUT: OVERALLANOVA written to 'der.check3' (21 observations across 7 BY groups).
+NOTE: DATA WORK.TABLE1
+
+
+NOTE: There were 19 observations read from the data set DER.CATSTATS_T2.
+NOTE: There were 32 observations read from the data set DER.CONTSTATS_T2.
+NOTE: The data set WORK.TABLE1 has 51 observations and 11 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: PROC SORT data=WORK.TABLE1
+
+NOTE: There were 51 observations read from the data set WORK.TABLE1.
+NOTE: The data set WORK.TABLE1 has 51 observations and 11 variables.
+NOTE: PROC SORT statement used.
+NOTE: DATA DER.TABLE1
+
+
+NOTE: There were 51 observations read from the data set WORK.TABLE1.
+NOTE: The data set DER.TABLE1 has 51 observations and 11 variables.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: ODS OUTPUT: ONEWAYFREQS -> WORK.GETNS
+NOTE: PROC FREQ
+NOTE: PROC FREQ statement used.
+NOTE: DATA _null_
+
+
+NOTE: There were 4 observations read from the data set WORK.GETNS.
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: Option ORIENTATION changed to LANDSCAPE.
+NOTE: Option LEFTMARGIN changed to 1CM.
+NOTE: Option RIGHTMARGIN changed to 1CM.
+NOTE: Fileref OUTFILE assigned to ~/Desktop/github/jenner/202609_table1/output/table1.txt.
+NOTE: Option TITLE changed to  .
+NOTE: Option TITLE2 changed to Table 1. Summary of Baseline Demographics.
+NOTE: PROC REPORT data=DER.TABLE1
+
+NOTE: PROC REPORT output 51 observations with 8 variables.
+
+NOTE: There were 51 observations read from the data set DER.TABLE1.
+NOTE: The data set (console) has 51 observations and 8 variables.
+NOTE: PROC REPORT elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
